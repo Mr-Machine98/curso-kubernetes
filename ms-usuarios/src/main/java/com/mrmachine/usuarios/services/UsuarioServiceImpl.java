@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.mrmachine.usuarios.clients.CursoClienteRest;
 import com.mrmachine.usuarios.models.entity.Usuario;
 import com.mrmachine.usuarios.repositories.UsuarioRepository;
 
@@ -15,8 +16,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	private UsuarioRepository repository;
 	
-	public UsuarioServiceImpl(UsuarioRepository repository) {
+	private CursoClienteRest client;
+	
+	public UsuarioServiceImpl(UsuarioRepository repository, CursoClienteRest client) {
 		this.repository = repository;
+		this.client = client;
 	}
 
 	@Override
@@ -39,6 +43,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Transactional
 	public void delete(Long id) {
 		repository.deleteById(id);
+		client.deleteCursoUsuario(id);
+	}
+
+	@Override
+	public Optional<Usuario> findByEmail(String email) {
+		return repository.findByEmail(email);
+	}
+
+	@Override
+	public List<Usuario> findByIds(Iterable<Long> ids) {
+		return (List<Usuario>) repository.findAllById(ids);
 	}
 
 }

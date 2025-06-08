@@ -1,0 +1,14 @@
+# Nos basamos de una imagen jdk 17
+FROM openjdk:17.0.2
+# Esta es nuestra carpeta de trabajo dentro de nuestro OS
+WORKDIR /app
+# Copie desde nuestro proyecto el .jar empaquetado
+# y mande eso a la carpeta de destino usando "."
+# que por defecto la carpeta es /app
+COPY ./target/ms-usuarios-0.0.1-SNAPSHOT.jar .
+# Exponer el puerto por donde escuchara' nuestra app
+EXPOSE 8001
+# Establecemos el punto de entrada, significa que cuando
+# levantamos un contenedor basado a estas sentencias siempre
+# siempre se va a un punto de entrada, osea el siguiente:
+ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]

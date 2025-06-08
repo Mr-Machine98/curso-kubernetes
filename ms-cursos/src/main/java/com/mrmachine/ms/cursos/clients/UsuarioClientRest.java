@@ -1,0 +1,26 @@
+package com.mrmachine.ms.cursos.clients;
+
+import java.util.List;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.mrmachine.ms.cursos.models.Usuario;
+
+@FeignClient(name = "ms-usuarios", url = "localhost:8001")
+public interface UsuarioClientRest {
+	
+	@GetMapping("/{id}")
+	Usuario detail(@PathVariable Long id);
+	
+	@PostMapping
+	Usuario create(@RequestBody Usuario usuario);
+	
+	@GetMapping("/usuarios-por-curso")
+	List<Usuario> getStudentsByCourse(@RequestParam Iterable<Long> ids);
+	
+}
