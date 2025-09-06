@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-usuarios
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-usuarios
+  template:
+    metadata:
+      labels:
+        app: ms-usuarios
+    spec:
+      containers:
+      - image: milomilon/curso-kubernetes-usuarios:latest
+        name: curso-kubernetes-usuarios
+        ports:
+          - containerPort: 8001
+        env:
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: ms-usuarios
+                key: port
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: ms-usuarios
+                key: db_host
+          - name: DB_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: ms-usuarios
+                key: db_database
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ms-usuarios
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ms-usuarios
+                key: password
+          - name: CURSOS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: ms-usuarios
+                key: cursos_url

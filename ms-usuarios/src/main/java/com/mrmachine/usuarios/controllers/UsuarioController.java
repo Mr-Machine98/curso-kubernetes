@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -28,9 +31,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UsuarioController {
 	
 	private UsuarioService service;
+	
+	@Autowired
+	private ApplicationContext context;
 
 	public UsuarioController(UsuarioService service) {
 		this.service = service;
+	}
+	
+	@GetMapping("/crash")
+	public String crash() {
+		((ConfigurableApplicationContext) this.context).close();
+		return "Stopped!!!";
 	}
 	
 	@GetMapping
@@ -48,7 +60,7 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/usuarios-por-curso")
-	public ResponseEntity<?> getMethodName(@RequestParam List<Long> ids) {
+	public ResponseEntity<?> findUsersByIds(@RequestParam List<Long> ids) {
 		return ResponseEntity.ok(service.findByIds(ids));
 	}
 	
@@ -66,7 +78,7 @@ public class UsuarioController {
 		if (optional.isPresent()) {
 			Usuario usuarioDb = optional.get();
 			if (!usuario.getEmail().isEmpty() && !usuario.getEmail().equalsIgnoreCase(usuarioDb.getEmail()) && service.findByEmail(usuario.getEmail()).isPresent()) 
-				return ResponseEntity.badRequest().body(Collections.singletonMap("email", "Email value is already exists!"));
+				return ResponseEntity.badRequest().body(Collections.singletonMap("email", "Email value is already exists!!!"));
 			usuarioDb.setNombre(usuario.getNombre());
 			usuarioDb.setEmail(usuario.getEmail());
 			usuarioDb.setPassword(usuario.getPassword());

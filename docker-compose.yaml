@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+
+   mysql8:
+      #Agregamos nombres
+      container_name: mysql8
+      image: mysql:8
+      ports:
+         - "3307:3306"
+      environment:
+         MYSQL_ROOT_PASSWORD: admin
+         MYSQL_DATABASE: ms_usuarios
+      volumes:
+         - data-mysql:/var/lib/mysql
+      restart: always
+      networks:
+         - spring
+   
+   postgres14:
+      #Agregamos nombres
+      container_name: postgres14
+      image: postgres:14-alpine
+      ports:
+         - "5433:5432"
+      environment:
+         POSTGRES_PASSWORD: admin
+         POSTGRES_DB: ms_cursos
+      volumes:
+         - data-postgres:/var/lib/postgresql/data
+      restart: always
+      networks:
+         - spring
+   
+   ms-usuarios:
+      #Agregamos nombres
+      container_name: ms-usuarios
+      # Hacemos referencia a la imagen remota
+      image: milomilon/curso-kubernetes-usuarios
+      # borramos build para poder hacer referencia a la imagen remota desde dockerhub
+      #build:
+         #context: ./
+         #dockerfile: ./ms-usuarios/dockerfile
+      ports:
+         - "8001:8001"
+      env_file: ./ms-usuarios/.env
+      networks:
+         - spring
+      depends_on:
+         - mysql8
+      restart: always
+      
+   ms-cursos:
+      #Agregamos nombres
+      # Hacemos referencia a la imagen remota
+      image: milomilon/curso-kubernetes-cursos
+      container_name: ms-cursos
+      # borramos build para poder hacer referencia a la imagen remota desde dockerhub
+      #build:
+         #context: ./
+         #dockerfile: ./ms-cursos/dockerfile
+      ports:
+         - "8002:8002"
+      env_file:
+         - ./ms-cursos/.env
+      networks:
+         - spring
+      depends_on:
+         - postgres14
+         - ms-usuarios
+      restart: always
+volumes:
+   data-mysql:
+      # Podemos reutilizar un volumen ya existente y lo usamos colocando su nombre
+      name: data-mysql
+   data-postgres:
+      # Podemos reutilizar un volumen ya existente y lo usamos colocando su nombre
+      name: data-postgres
+networks:
+   spring:
+   
+   

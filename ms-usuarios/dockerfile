@@ -1,14 +1,35 @@
-# Nos basamos de una imagen jdk 17
-FROM openjdk:17.0.2
-# Esta es nuestra carpeta de trabajo dentro de nuestro OS
+ARG MS_NAME=ms-usuarios
+
+
+FROM openjdk:17-jdk-alpine as builder
+ARG MS_NAME
+WORKDIR /app/${MS_NAME}
+
+COPY ./pom.xml /app
+COPY ./${MS_NAME}/.mvn ./.mvn
+COPY ./${MS_NAME}/mvnw .
+COPY ./${MS_NAME}/pom.xml .
+
+RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
+
+COPY ./${MS_NAME}/src ./src
+
+RUN ./mvnw clean package -DskipTests
+
+# -----------------------------------------------------
+
+FROM openjdk:17-jdk-alpine
+
 WORKDIR /app
-# Copie desde nuestro proyecto el .jar empaquetado
-# y mande eso a la carpeta de destino usando "."
-# que por defecto la carpeta es /app
-COPY ./target/ms-usuarios-0.0.1-SNAPSHOT.jar .
-# Exponer el puerto por donde escuchara' nuestra app
-EXPOSE 8001
-# Establecemos el punto de entrada, significa que cuando
-# levantamos un contenedor basado a estas sentencias siempre
-# siempre se va a un punto de entrada, osea el siguiente:
-ENTRYPOINT ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
+
+RUN mkdir ./logs
+ARG MS_NAME
+ARG TARGET_FOLDER=/app/${MS_NAME}/target/
+COPY --from=builder ${TARGET_FOLDER}ms-usuarios-0.0.1-SNAPSHOT.jar .
+ARG PORT_APP=8001
+# Este es el puerto interno del contenedor
+ENV PORT=${PORT_APP}
+
+EXPOSE ${PORT}
+
+CMD ["java", "-jar", "ms-usuarios-0.0.1-SNAPSHOT.jar"]
