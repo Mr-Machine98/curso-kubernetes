@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mrmachine.ms.cursos.models.Usuario;
 
-@FeignClient(name = "ms-usuarios", url = "${ms.usuarios.url}")
+@FeignClient(name = "ms-usuarios")
 public interface UsuarioClientRest {
 	
 	@GetMapping("/{id}")

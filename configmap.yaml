@@ -9,7 +9,25 @@ data:
 #  username: root
 #  password: admin
   cursos_url: ms-cursos:8002
-
+  
+  # Spring Cloud en ConfigMap
+  ms-usuarios.yaml: |-
+    config:
+      texto: Configurando ambiente por defecto
+    ---
+    spring:
+      config:
+        activate:
+          on-profile: dev
+    config:
+      texto: Configuración de desarrollo
+    ---
+    spring:
+      config:
+        activate:
+          on-profile: prod
+    config:
+      texto: Configuración de producción  
 ---
 
 apiVersion: v1

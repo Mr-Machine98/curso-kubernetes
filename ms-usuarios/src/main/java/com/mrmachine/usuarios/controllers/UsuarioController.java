@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -34,7 +35,10 @@ public class UsuarioController {
 	
 	@Autowired
 	private ApplicationContext context;
-
+	
+	@Autowired
+	private Environment env;
+	
 	public UsuarioController(UsuarioService service) {
 		this.service = service;
 	}
@@ -43,6 +47,15 @@ public class UsuarioController {
 	public String crash() {
 		((ConfigurableApplicationContext) this.context).close();
 		return "Stopped!!!";
+	}
+	
+	@GetMapping("/all-info-pod")
+	public ResponseEntity<?> findAllAddInfoPod() {
+		Map<String, Object> body = new HashMap<String, Object>();
+		body.put("users", service.findAll());
+		body.put("pod_info", String.format("pod_name: %s, pod_ip: %s", env.getProperty("MY_POD_NAME"), env.getProperty("MY_POD_IP")));
+		body.put("texto", env.getProperty("config.texto"));
+		return ResponseEntity.ok(body);
 	}
 	
 	@GetMapping

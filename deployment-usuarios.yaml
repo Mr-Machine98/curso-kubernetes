@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: ms-usuarios
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: ms-usuarios
@@ -18,6 +18,14 @@ spec:
         ports:
           - containerPort: 8001
         env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           - name: PORT
             valueFrom:
               configMapKeyRef:
@@ -48,3 +56,30 @@ spec:
               configMapKeyRef:
                 name: ms-usuarios
                 key: cursos_url
+          # activamos el perfil dev      
+          - name: SPRING_PROFILES_ACTIVE
+            value: dev
+#        readinessProbe:
+#          httpGet:
+#            path: /actuator/health/readiness
+#            port: 8001
+#            scheme: HTTP
+#          initialDelaySeconds: 5
+#          periodSeconds: 20
+#          timeoutSeconds: 10
+#        livenessProbe:
+#          httpGet:
+#            path: /actuator/health/liveness
+#            port: 8001
+#            scheme: HTTP
+#          initialDelaySeconds: 10
+#          periodSeconds: 30
+#          timeoutSeconds: 10
+        #Asignar recursos a los pods
+#        resources:
+#          requests:
+#            memory: "512Mi"
+#            cpu: "400m"
+#          limits:
+#            memory: "800Mi"
+#            cpu: "500m"        
