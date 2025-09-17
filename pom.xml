@@ -17,6 +17,7 @@
 	<modules>
 		<module>ms-usuarios</module>
 		<module>ms-cursos</module>
+		<module>ms-gateway</module>
 	</modules>
 	
 </project>
