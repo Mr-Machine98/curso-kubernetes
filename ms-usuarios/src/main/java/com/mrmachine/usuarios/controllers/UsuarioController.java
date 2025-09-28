@@ -77,6 +77,11 @@ public class UsuarioController {
 		return ResponseEntity.ok(service.findByIds(ids));
 	}
 	
+	@GetMapping("/authorized")
+	public Map<String, Object> authorized(@RequestParam String code) {
+		return Collections.singletonMap("code", code);
+	}
+	
 	@PostMapping
 	public ResponseEntity<?> save(@Valid @RequestBody Usuario usuario, BindingResult result) {
 		if(!usuario.getEmail().isEmpty() && service.findByEmail(usuario.getEmail()).isPresent()) return ResponseEntity.badRequest().body(Collections.singletonMap("email", "Email value is already exists!"));

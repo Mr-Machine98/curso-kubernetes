@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - image: milomilon/gateway:latest
-        name: gateway
+        name: ms-gateway
         ports:
           - containerPort: 8090
 ---

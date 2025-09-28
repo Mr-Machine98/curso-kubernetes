@@ -18,6 +18,6 @@
 		<module>ms-usuarios</module>
 		<module>ms-cursos</module>
 		<module>ms-gateway</module>
+		<module>ms-auth</module>
 	</modules>
-	
 </project>
